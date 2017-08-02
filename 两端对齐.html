@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        li {
+            position: relative;
+            display: block;
+            overflow: hidden;
+        }
+
+        span:first-child {
+            position: relative;
+            width: 96px;
+            text-align: justify;
+            float: left;
+            padding-left: 22px;
+        }
+
+        span:first-child::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 12px;
+            height: 12px;
+            margin-top: -6px;
+            background-color: #eee;
+            border-radius: 50%;
+        }
+
+        span:first-child::after {
+            content: '';
+            display: inline-block;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+<ul>
+    <li>
+        <span>姓名</span>
+        <span>67，800.00</span>
+    </li>
+    <li>
+        <span>手机号</span>
+        <span>100，000.00</span>
+    </li>
+    <li>
+        <span>所在班级</span>
+        <span>100，000.00</span>
+    </li>
+</ul>
+</body>
+</html>
