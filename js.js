@@ -136,5 +136,8 @@ var fund = {
             returnChar = returnChar.substr(0, returnChar.length - 1)
         }
         return returnChar
+    },
+    randomString: function () {
+        return Math.random().toString(16).substring(2) // 13位
     }
 }
