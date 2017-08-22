@@ -17,7 +17,7 @@ var fund = {
             document.writeln("pc");
         }
     },
-    kilo: function (num) {  // 千分符
+    kilo: function (num) {  // 千分符（我的）
         let [temp, tempStr, strArray, str] = [[], '', num.toString().split('.'), strArray[0]]
         str = str.split('').reverse()
         for (let i = 0; i < str.length; i++) {
@@ -33,6 +33,14 @@ var fund = {
             tempStr = tempStr + '.' + strArray[1]
         }
         return tempStr
+    },
+    kiloElegence: function formatCash(str) {    //优雅地实现千分符
+        return str.split('').reverse().reduce((prev, next, index) => {
+            return ((index % 3) ? next : (next + ',')) + prev
+        })
+    },
+    kiloReg: function (str) {   // 正则千分符
+        return str.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
     },
     Arabia_To_SimplifiedChinese: function (Num) {   // 数值转文字读法
         for (let i = Num.length - 1; i >= 0; i--) {
@@ -139,5 +147,17 @@ var fund = {
     },
     randomString: function () {
         return Math.random().toString(16).substring(2) // 13位
+    },
+    toNumber: function (str) {
+        return +str
+    },
+    arrayDuplicate: function (array) {
+        return [...new Set(array)]
+    },
+    getMax: function (numbers) {    //取出一个数组中的最大值
+        return Math.max.apply(Math, numbers);
+    },
+    getMin(numbers) {//取出一个数组中的最小值
+        return Math.min.apply(Math, numbers);
     }
 }
