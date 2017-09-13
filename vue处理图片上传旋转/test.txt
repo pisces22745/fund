@@ -1,0 +1,171 @@
+<div id="app">
+    <div class="content-box">
+        <textarea v-model="content" placeholder="来到这里肯定想点说什么呢？"></textarea>
+    </div>
+    <div class="img-box">
+        <ul>
+            <li class="img" v-for="(imgUrl,index) of imgSrc.dataUrl">
+                <span @click="delImg(index)"><i class="iconfont hc-cha"></i></span>
+                <img :src="imgUrl">
+            </li>
+            <li class="add" @click="imgUpload" v-if="imgSrc.dataUrl.length < 4">
+                <i class="iconfont hc-jia"></i>
+            </li>
+        </ul>
+    </div>
+    <form ref="myform">
+        <input type="file" id="upImg" accept="image/jpg, image/png, image/gif, image/jpeg" @change="handleFileChange" ref="upimg" style="display: none;">
+    </form>
+    <div class="foot" @click="sendPost">
+        发布帖子
+    </div>
+    <img id="mmimg" src="">
+</div>
+
+delImg: function (e) {
+    this.imgSrc.dataUrl.splice(e,1);
+    this.img.splice(e,1);
+    this.$refs.myform.reset(); //表单重置，解决input onchange选重问题
+},
+imgPreview:function (file,path,name) {
+    var self = this;
+    if(self.imgSrc.dataUrl.length >= self.imgSrc.imgLength){
+        return;
+    }
+    // 是否支持FileReader
+    if (!file || !window.FileReader){
+        if(path){
+            self.imgSrc.dataUrl.push(path) ;
+        }
+        return;
+    }
+
+    if (/^image/.test(file.type)) {
+        // 创建一个reader
+        var reader = new FileReader();
+        // 将图片将转成 base64 格式
+        reader.readAsDataURL(file);
+        // 读取成功后的回调
+        reader.onloadend = function () {
+            self.imgSrc.dataUrl.push(this.result) ; //64格式图片数组
+            if(name && path){
+                var imgObj = {
+                    name:name,
+                    path:path,
+                           base:this.result
+                };
+                self.imgSrc.imgName.push(imgObj);
+            }
+        }
+    }
+},
+imgUpload:function () {
+    var upImg = this.$refs.upimg;
+    upImg.click();
+},
+handleFileChange:function (e) {
+    var _this = this;
+    var upImg = _this.$refs.upimg;
+    var img = upImg.files[0];
+    console.log(img)
+    if(img){
+        var image = new Image();
+        image.src = window.URL.createObjectURL(img);
+        image.onload = function () {
+            var imageData = _this.getBase64Image(image,'',function (url) {
+                var blob = _this.dataURLtoBlob(url);
+                console.log(blob);
+                var newSize = (blob.size/1024).toFixed(2);
+                if(newSize <= 10240){
+                    _this.$indicator.open({
+                        text: '图片上传中',
+                        spinnerType: 'triple-bounce'
+                    });
+                    var formData = new FormData();
+                    formData.append('picture',blob);
+                    _this.$http.post("{:Url('File/uploadPicture')}",formData).then(function (res) {
+                        var data = JSON.parse(res.data);
+                        console.log(data)
+                        if(data.code == 1){
+                            // 在获取到文件对象进行预览
+                            _this.$indicator.close();
+                            _this.img.push(data.data.path); //上传后图片路径
+                            _this.imgPreview(img,data.data.path,name);
+                        }else{
+                            _this.$indicator.close();
+                            _this.$toast({
+                                message:"上传失败，请重新上传！",
+                                duration:1000
+                            });
+                        }
+                    },function (res) {
+                        _this.$indicator.close();
+                        _this.$toast({
+                            message:"上传失败，请重新上传！",
+                            duration:1000
+                        });
+                    });
+                }else{
+                    _this.$toast("单张上传图片大小不能超过10M,请重新上传！");
+                }
+            })
+        }
+    }
+},
+//将图片压缩转成base64
+getBase64Image:function(img,b,callback) {
+    var Orientation;
+    var _this = this;
+    var canvas = document.createElement("canvas");
+    var width = img.width;
+    var height = img.height;
+    console.log(width+'--'+height);
+    var ctx = canvas.getContext("2d");
+    //       ctx.drawImage(img,x,y,c,z,0,0,width,height); /*绘图*/
+    $(canvas).attr({width : width, height : height});
+    EXIF.getData(img, function() {
+        EXIF.getAllTags(this);
+        /**
+         * 图片的旋转方向信息
+         * 1、图片没有发生旋转
+         * 6、顺时针90°
+         * 8、逆时针90°
+         * 3、180° 旋转
+         */
+        Orientation = EXIF.getTag(this, 'Orientation');
+        if(Orientation != "" && Orientation != null) {
+            // 方向信息，canvas 显示形式，canvas 对象，that,宽度，高度
+            _this.rotateImg(Orientation,ctx,canvas,img,width,height,callback);
+        }else {
+            _this.rotateImg(Orientation,ctx,canvas,img,width,height,callback);
+        }
+
+    });
+},
+rotateImg: function(Orientation,ctx,canvas,that,w,h,callback) {
+    if(Orientation == "6") {
+        $(canvas).attr({width : h, height : w});
+        ctx.translate(h, 0);
+        var angle = 90;
+        //清空画布指定像素
+        ctx.clearRect(-w, -h, w, h);
+        // 画布旋转 90度
+        ctx.rotate(angle * Math.PI / 180);
+        ctx.fillRect(w, h, w, h);
+    }
+    //向画布上绘制图像、画布或视频
+    ctx.drawImage(that, 0, 0, w, h);
+
+    var base64 = canvas.toDataURL('image/jpeg', 1 || 0.8 );   //1z 表示图片质量，越低越模糊。
+    console.log(base64);
+    return callback(base64);
+
+},
+dataURLtoBlob:function(dataurl) {
+    var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+        bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+    while(n--){
+        u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new Blob([u8arr], {type:mime});
+}
