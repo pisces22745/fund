@@ -159,5 +159,10 @@ var fund = {
     },
     getMin(numbers) {//取出一个数组中的最小值
         return Math.min.apply(Math, numbers);
+    },
+    reg:function () {
+        return {
+            mobile: /^(13|14|15|17|18)[0-9]{9}$/    // 手机号验证正则
+        }
     }
 }
