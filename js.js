@@ -160,9 +160,18 @@ var fund = {
     getMin(numbers) {//取出一个数组中的最小值
         return Math.min.apply(Math, numbers);
     },
-    reg:function () {
+    reg: function () {
         return {
             mobile: /^(13|14|15|17|18)[0-9]{9}$/    // 手机号验证正则
         }
+    },
+    scrollTop: function () {    // 滚动到顶部
+        (function smoothscroll() {
+            let currentScroll = document.documentElement.scrollTop || document.body.scrollTop;
+            if (currentScroll > 0) {
+                window.requestAnimationFrame(smoothscroll);
+                window.scrollTo(0, Math.floor(currentScroll - (currentScroll / 5)));    // ie下 滚动如果是1.6，则实际滚动2，使用math.floor防止出现死循环
+            }
+        })()
     }
 }
