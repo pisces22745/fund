@@ -173,5 +173,20 @@ var fund = {
                 window.scrollTo(0, Math.floor(currentScroll - (currentScroll / 5)));    // ie下 滚动如果是1.6，则实际滚动2，使用math.floor防止出现死循环
             }
         })()
+    },
+    setStore: (name, content) => {  // localstorage操作
+        if (!name) return
+        if (typeof content !== 'string') {
+            content = JSON.stringify(content)
+        }
+        window.localStorage.setItem(name, content)
+    },
+    getStore: name => {
+        if (!name) return
+        return window.localStorage.getItem(name)
+    },
+    removeStore: name => {
+        if (!name) return
+        window.localStorage.removeItem(name)
     }
 }
