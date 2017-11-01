@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .semicircle {
+            background-color: orange;
+            margin: 30px;
+        }
+        .top {
+            width: 100px;/*宽度为高度的2倍*/
+            height: 50px;
+            border-radius: 50px 50px 0 0;/*圆角半径为高度的值*/
+        }
+        .right {
+            height: 100px;/*高度为宽度的2倍*/
+            width: 50px;
+            border-radius: 0 50px 50px 0;/*圆角半径为宽度的值*/
+        }
+        .bottom {
+            width: 100px;/*宽度为高度的2倍*/
+            height: 50px;
+            border-radius: 0 0 50px 50px;/*圆角半径为高度的值*/
+        }
+        .left {
+            width: 50px;
+            height: 100px;/*高度为宽度的2倍*/
+            border-radius: 50px 0 0 50px;/*圆角半径为宽度的值*/
+        }
+    </style>
+</head>
+<body>
+    <div class="semicircle top"></div>
+    <div class="semicircle right"></div>
+    <div class="semicircle bottom"></div>
+    <div class="semicircle left"></div>
+</body>
+</html>
