@@ -12,6 +12,12 @@
         data() {
             return {}
         },
+        /**
+         * @callBack    滑块完成时回掉方法
+         * @origalMsg   滑块初始化显示的信息
+         * @resultMsg   滑块完成时显示的信息
+         * @name 滑块组建名称
+         */
         props: ['callBack', 'origalMsg', 'resultMsg', 'name'],
         mounted() {
             var vm = this
