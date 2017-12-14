@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style lang="scss">
+        .radio {
+            display: none;
+        }
+
+        .radio + label {
+            position: relative;
+            display: inline-block;
+            padding: 3px 0 3px 29px;
+            font-size: 14px;
+            font-weight: 300;
+        }
+
+        .radio + label::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            -webkit-transform: translateY(-50%);
+            transform: translateY(-50%);
+            left: 4px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 2px solid #777980;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+
+        .radio + label::after {
+            content: attr(title);
+            position: absolute;
+            top: 50%;
+            -webkit-transform: translateY(-50%);
+            transform: translateY(-50%);
+            left: 6px;
+            width: 14px;
+            height: 14px;
+            border: 3px solid #F7F9F9;
+            border-radius: 50%;
+            font-size: 14px;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+
+        .radio:checked + label {
+            color: #e73828;
+        }
+
+        .radio:checked + label:before {
+            border: 2px solid #e73828;
+        }
+
+        .radio:checked + label:after {
+            background: #e73828;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <input type="radio" class="radio" name="binding" checked>
+    <label>健壮</label>
+</div>
+<div>
+    <input type="radio" class="radio" name="binding">
+    <label>健壮</label>
+</div>
+</body>
+</html>
